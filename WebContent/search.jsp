@@ -23,14 +23,21 @@
             background-color:grey;
         }
        .jumbotron{
-           padding-top: 10px;
-           padding-bottom: 30px;
+           padding-top: 0px;
+           padding-bottom: 50px;
            margin-top:0;
            margin-bottom: 30px;
            color: inherit;
            background-color: #eee;
            background-position:top left;
        }
+       .container-fluid {
+    		padding-right: 10px;
+    		padding-left: 0px;
+    		margin-right: auto;
+    		margin-left: auto;
+    		background-color: dimgray;
+		}
         .row{
             margin-right: -15px;
             margin-left: 31%;
@@ -40,6 +47,9 @@
         	margin-left:10%;
         }
         
+        #td2{
+        	padding-top:15px;
+        }
         #td3{
         	padding-top:15px;
         }
@@ -50,16 +60,77 @@
   			box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4);
   			margin-bottom: 25px;
 		}
-
+		.jumbotron p {
+    		padding-top: 11px;
+    		margin-bottom: 15px;
+    		font-size: 16px;
+    		font-weight: 200;
+    		color: white;
+		}
+		.navbar-default .navbar-nav>li>a {
+    		color: white;
+    		font-size:17px;
+    		
+		}
+		.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+    		border-color: #e7e7e7;
+    		margin-left: 43%;
+		}
+		
+		.form-horizontal .control-label {
+    		padding-top: 7px;
+    		margin-bottom: 0;
+    		text-align: right;
+    		margin-left: 14%;
+		}
+		.col-sm-offset-2 {
+    		margin-left: 16.66666667%;
+    		padding-left: 20%;
+		}
 		div.container {
   			text-align: center;
   			padding: 10px 20px;
 		}
-		#img1{
-			border-radius:4px;
+		#search {
+  			display: inline-block;
+  			border-radius: 4px;
+  			color: black;
+  			text-align: center;
+  			
+  			padding-left: 10px;
+  			padding-right:10px;
+  			width:80px;
+  			transition: all 0.5s;
+  			cursor: pointer;
 		}
-       a:hover{color:purple;}
-       a:visited{color:purple;}
+
+		#search span {
+  			cursor: pointer;
+  			display: inline-block;
+  			position: relative;
+  			transition: 0.5s;
+		}
+
+		#search span:after {
+  			content: '»';
+  			position: absolute;
+  			opacity: 0;
+  			top: 0;
+  			right: -20px;
+  			transition: 0.5s;
+		}
+	
+		#search:hover span {
+  			padding-right: 25px;
+		}
+
+		#search:hover span:after {
+  			opacity: 1;
+  			right: 0;
+		}
+		a:link{color:blue;}
+       	a:visited{color:blue;}
+       	a:hover{color:purple;}
     </style>
 </head>
 	<%
@@ -75,46 +146,94 @@
     <body>
     
     <div class="jumbotron">
+    
+    	<nav class="navbar navbar-default">
+  		<div class="container-fluid">
+    	<!-- Brand and toggle get grouped for better mobile display -->
+    		<div class="navbar-header">
+      		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        		<span class="sr-only">Toggle navigation</span>
+        		<span class="icon-bar"></span>
+        		<span class="icon-bar"></span>
+        		<span class="icon-bar"></span>
+      		</button>
+      		<p>Books Management System</p>
+    		</div>
+    		
+    		<script type="text/javascript">
+    			function searchByBook(title){
+    				if(title.value=="")	alert("输入不能为空！");
+    				else{
+                		$.post('BookIsExit',
+                				$("#guide").serializeArray() 
+                    			,function(data){
+                    			if(data["result"]=="书籍不存在!"){
+                    				var r=confirm("书籍不存在!是否新建书籍字条？");
+                    				if(r){
+                    					location.href="addBook.jsp";
+                    				}
+                    			}
+                    			else {
+                    				guide.action="queryByBook.action";
+                                	guide.submit();
+                    			}
+                    		})
+                    }
+    			}
+    		</script>
+		
+    		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      		<form name="guide" id="guide" class="navbar-form navbar-left">
+        		<div class="form-group">
+          		<input type="text" name="title" class="form-control" placeholder="Search by bookname">
+        		</div>
+        		<button class="btn btn-default" id="search" type="button" style="vertical-align:middle"
+                 onclick="searchByBook(guide.title)"><span>search</span></button>
+      		</form>
+      		<ul class="nav navbar-nav navbar-right">
+        		<li><a href="index.jsp">主页</a></li>
+        		<li class="dropdown">
+          		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" 
+          		aria-expanded="true">功能 <span class="caret"></span></a>
+          		<ul class="dropdown-menu">
+            		<li><a href="addBook.jsp">添加书籍</a></li>
+            		<li><a href="addAuthor.jsp">添加作者</a></li>
+            		<!-- <li><a href="#">Something else here</a></li>-->
+          		</ul>
+        		</li>
+      		</ul>
+    		</div><!-- /.navbar-collapse -->
+  		</div><!-- /.container-fluid -->
+	</nav>
+    	
        	<div class="page-header">
             <h1 align="center"> <small></small></h1>
         </div>
         
         <div id="list">
         <table class="table table-hover">
-        	<caption><h2>查找结果：</h2></caption>
+        	<caption><h2>查询结果：</h2></caption>
+        	<tr>
+        		<th>操作</th>
+        		<th>title</th>
+        		<th>AuthorID</th>
+        	</tr>
         	<%
         		for(String work:works){
         			String[] items=work.split("~");
         		String author=items[6];
         		String ISBN=items[0];
         		String title=items[1];
-        		String AuthorID=items[2];
+        		String authorID=items[2];
         		String Publisher=items[3];
         	%>
-        	
-        			<div class="single-member effect-3">
-                        <div class="member-image">
-                            <img src="黄金时代.jpg" alt="Member">
-                        </div>
-                        <div class="member-info">
-                            <h3><%=title %></h3>
-                            <h5><%=author %></h5>
-                            <p>ISBN:<%=ISBN %></p>
-                            <p>Publisher:<%=Publisher %></p>
-                            <div class="social-touch">
-                                <a class="fb-touch" href="detailOfBook.action?ISBN=<%=items[0] %>&AuthorID=<%=items[2] %>">Detail...</a>
-                                <a class="tweet-touch" href="#"></a>
-                                <a class="linkedin-touch" href="#"></a>
-                            </div>
-                        </div>
-                    </div>
 			
         		<tr>
         			<td>
-        			<input type="button" name="Submit2" value="删除" class="btn btn-default" onClick="loadXMLDoc()" >&nbsp;&nbsp;&nbsp;&nbsp;
-        			<a class="btn btn-default" href="modify.jsp?ISBN=<%=items[0] %>&title=<%=title %>" role="button">更新</a>
+        			<input type="button" name="Submit2" value="删除" class="btn btn-default" onClick="loadXMLDoc()" />
         			</td>
-        			<td id="td3"><a href="detailOfBook.action?ISBN=<%=items[0] %>&AuthorID=<%=items[2] %>"><%=items[1] %></a></td>
+        			<td id="td2"><a href="detailOfBook.action?ISBN=<%=items[0] %>&AuthorID=<%=items[2] %>"><%=items[1] %></a></td>
+        			<td id="td3"><%=authorID %></td>
         		</tr>
         	<%
         		}

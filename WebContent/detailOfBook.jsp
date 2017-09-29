@@ -25,8 +25,15 @@
             background:cover;
             background-color:grey;
         }
+        .container-fluid {
+    		padding-right: 15px;
+    		padding-left: 15px;
+    		margin-right: auto;
+    		margin-left: auto;
+    		background-color: dimgray;
+		}
        .jumbotron{
-           padding-top: 10px;
+           padding-top: 0px;
            padding-bottom: 30px;
            margin-top:0;
            margin-bottom: 30px;
@@ -34,11 +41,39 @@
            background-color: #eee;
            background-position:top left;
        }
-       /* .page-header{
-               padding-bottom: 9px;
-               margin: 40px 0 20px;
-               border-bottom: 1px solid #eee;
-        }*/
+       .page-header {
+    		padding-bottom: 9px;
+   			padding-top: 8px;
+    		margin: 40px 0 20px;
+    		border-bottom: 1px solid #eee;
+		}
+        .jumbotron p {
+    		padding-top: 11px;
+    		margin-bottom: 15px;
+    		font-size: 16px;
+    		font-weight: 200;
+    		color: white;
+		}
+		.navbar-default .navbar-nav>li>a {
+    		color: white;
+    		font-size:17px;
+    		
+		}
+		.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+    		border-color: #e7e7e7;
+    		margin-left: 43%;
+		}
+		
+		.form-horizontal .control-label {
+    		padding-top: 7px;
+    		margin-bottom: 0;
+    		text-align: right;
+    		margin-left: 14%;
+		}
+		.col-sm-offset-2 {
+    		margin-left: 16.66666667%;
+    		padding-left: 20%;
+		}
         #dropdownMenu1{
             box-shadow:0 0 4px 6px rgba(0,0,0,0.19),0 0 6px 20px rgba(0,0,0,0.2);
         }
@@ -49,6 +84,79 @@
         caption{
         	text-align:center;
         }
+        #back {
+  			display: inline-block;
+  			margin-left:45%;
+        	font-size:17px;
+        	padding-left:20px;
+        	padding-right:20px;
+        	text-align: center;
+        	width: 110px;
+        	transition: all 0.5s;
+  			cursor: pointer;
+		}
+
+		#back span {
+  			cursor: pointer;
+  			display: inline-block;
+  			position: relative;
+  			transition: 0.5s;
+		}
+
+		#back span:after {
+  			content: '<<';
+  			position: absolute;
+  			opacity: 0;
+  			top: 0;
+  			left: -20px;
+  			transition: 0.5s;
+		}
+		
+		#back:hover span {
+  			padding-left: 25px;
+		}
+
+		#back:hover span:after {
+  			opacity: 1;
+  			left: 0;
+		}
+		#search {
+  			display: inline-block;
+  			border-radius: 4px;
+  			color: black;
+  			text-align: center;
+  			
+  			padding-left: 10px;
+  			padding-right:10px;
+  			width:80px;
+  			transition: all 0.5s;
+  			cursor: pointer;
+		}
+
+		#search span {
+  			cursor: pointer;
+  			display: inline-block;
+  			position: relative;
+  			transition: 0.5s;
+		}
+
+		#search span:after {
+  			content: '»';
+  			position: absolute;
+  			opacity: 0;
+  			top: 0;
+  			right: -20px;
+  			transition: 0.5s;
+		}
+	
+		#search:hover span {
+  			padding-right: 25px;
+		}
+
+		#search:hover span:after {
+  			opacity: 1;
+  			right: 0;
+		}
     </style>
 </head>
 	<%
@@ -60,6 +168,66 @@
 	%>
     <body>
     <div class="jumbotron">
+    
+    	<nav class="navbar navbar-default">
+  		<div class="container-fluid">
+    	<!-- Brand and toggle get grouped for better mobile display -->
+    		<div class="navbar-header">
+      		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        		<span class="sr-only">Toggle navigation</span>
+        		<span class="icon-bar"></span>
+        		<span class="icon-bar"></span>
+        		<span class="icon-bar"></span>
+      		</button>
+      		<p>Books Management System</p>
+    		</div>
+
+			<script type="text/javascript">
+    			function searchByBook(title){
+    				if(title.value=="")	alert("输入不能为空！");
+    				else{
+                		$.post('BookIsExit',
+                				$("#guide").serializeArray() 
+                    			,function(data){
+                    			if(data["result"]=="书籍不存在!"){
+                    				var r=confirm("书籍不存在!是否新建书籍字条？");
+                    				if(r){
+                    					location.href="addBook.jsp";
+                    				}
+                    			}
+                    			else {
+                    				guide.action="queryByBook.action";
+                                	guide.submit();
+                    			}
+                    		})
+                    }
+    			}
+    		</script>
+			
+    		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      		<form name="guide" id="guide" class="navbar-form navbar-left">
+        		<div class="form-group">
+          		<input name="title" type="text" class="form-control" placeholder="Search by bookname">
+        		</div>
+        		<button class="btn btn-default" id="search" type="button" style="vertical-align:middle"
+                 onclick="searchByBook(guide.title)"><span>search</span></button>
+      		</form>
+      		<ul class="nav navbar-nav navbar-right">
+        		<li><a href="index.jsp">主页</a></li>
+        		<li class="dropdown">
+          		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" 
+          		aria-expanded="true">功能 <span class="caret"></span></a>
+          		<ul class="dropdown-menu">
+            		<li><a href="addBook.jsp">添加书籍</a></li>
+            		<li><a href="addAuthor.jsp">添加作者</a></li>
+            		<!-- <li><a href="#">Something else here</a></li>-->
+          		</ul>
+        		</li>
+      		</ul>
+    		</div><!-- /.navbar-collapse -->
+  		</div><!-- /.container-fluid -->
+	</nav>
+    
        <div class="page-header">
             <h1 align="center">图书信息 <small></small></h1>
         </div>
@@ -116,7 +284,7 @@
         			<td style="padding:10px"><%=price%></td>
         			<td>
         				<input type="button" name="Submit2" value="删除" class="btn btn-default" onClick="loadXMLDoc()" >
-        				<a class="btn btn-default" href="modify.jsp?ISBN=<%=ISBN %>&title=<%=utftitle %>" role="button">更新</a>
+        				<a class="btn btn-default" href="modify.jsp?ISBN=<%=ISBN %>&title=<%=utftitle %>&AuthorID=<%=authorID %>" role="button">更新</a>
         			</td>
         	</tr>
         </table>
@@ -139,6 +307,9 @@
         		<td style="padding:5px"><%=Country%></td>
         	</tr>
         </table>
+        <div>
+        	<button id="back" name="back" style="vertical-align:middle" class="btn btn-default" onclick="javascript:history.back(-1)"><span>返回</span></button>
+        </div>
     </div>
 
     </body>

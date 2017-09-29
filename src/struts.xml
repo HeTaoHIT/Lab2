@@ -11,6 +11,10 @@
             <result name="success">search.jsp</result>
 			<result name="error">error.jsp</result>
       	</action>
+      	<action name="queryByBook" class="com.hetao.action.bookAction" method="queryByBook">
+      		<result name="success">search.jsp</result>
+      	</action>
+      	
      	<action name="detailOfBook" class="com.hetao.action.bookAction" method="DetailOfBook">
      		<result name="success">detailOfBook.jsp</result>
      		<result name="error">error.jsp</result>
@@ -22,6 +26,20 @@
      	</action>
      </package>
      <package name="Json" extends="json-default">
+     	<action name="AuthorIsExit" class="com.hetao.action.bookAction" method="AuthorIsExit">
+     		<result type="json">
+     			<param name="result">result</param>
+     			<param name="noCache">true</param>
+     			<param name="excludeNullProperties">true</param>
+     		</result>
+     	</action>
+     	<action name="BookIsExit" class="com.hetao.action.bookAction" method="BookIsExit">
+     		<result type="json">
+     			<param name="result">result</param>
+     			<param name="noCache">true</param>
+     			<param name="excludeNullProperties">true</param>
+     		</result>
+     	</action>
      	<action name="modify" class="com.hetao.action.bookAction" method="modify">
      		<result type="json">
      			<param name="result">result</param>
