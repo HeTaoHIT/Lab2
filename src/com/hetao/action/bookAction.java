@@ -5,6 +5,8 @@ package com.hetao.action;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -186,28 +188,21 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 		}
 		
 		ResultSet rs=stat.executeQuery("select * from book where ISBN=\""+ISBN+"\"");
-		String result="";
-		if(rs.wasNull())	return ERROR;
+		LinkedList<String> resultJSON=new LinkedList<>();
 		while(rs.next()){
-			result+=rs.getString(1)+"~";
-			result+=rs.getString(2)+"~";
-			result+=rs.getString(3)+"~";
-			result+=rs.getString(4)+"~";
-			result+=rs.getString(5)+"~";
-			result+=rs.getString(6);
+			for(int i=0;i<6;i++)
+				resultJSON.add(rs.getString(i+1));
 		}
-		request.setAttribute("result", result);
+		request.setAttribute("result", resultJSON);
 		rs.close();
 		
 		connect=DriverManager.getConnection(url,"root","www.12358.com");
 		stat=(Statement) connect.createStatement();
 		rs=stat.executeQuery("select * from author where AuthorID=\""+AuthorID+"\"");
-		String authorInfo=new String();
+		LinkedList<String> authorInfo=new LinkedList<String>();
 		while(rs.next()){
-			authorInfo+=rs.getString(1)+"~";
-			authorInfo+=rs.getString(2)+"~";
-			authorInfo+=rs.getString(3)+"~";
-			authorInfo+=rs.getString(4);
+			for(int i=0;i<4;i++)
+				authorInfo.add(rs.getString(i+1));
 		}
 		request.setAttribute("authorInfo", authorInfo);
 		rs.close();stat.close();connect.close();
@@ -220,22 +215,25 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 		Connection connect=DriverManager.getConnection(url,"root","www.12358.com");
 		Statement stat=(Statement) connect.createStatement();
 		ResultSet rs=stat.executeQuery("select * from author where name=\""+author+"\"");
-		String id="";
+		ArrayList<String> ids=new ArrayList<>();
 		while(rs.next()){
-			id=rs.getString(1);
+			ids.add(rs.getString(1));
 		}
 		rs.close();
-		
-		rs=stat.executeQuery("select * from book where AuthorID=\""+id+"\"");
-		//if(rs.wasNull())	return ERROR;
-		String result="";
-		while(rs.next()){
-			for(int i=0;i<6;i++)
-				result+=rs.getString(i+1)+"~";
-			result+=author+"!";
+		ArrayList<String[]> queryResult = new ArrayList<String[]>();
+		for(String id:ids){
+			rs=stat.executeQuery("select * from book where AuthorID=\""+id+"\"");
+			String[] record = new String[7];
+			while(rs.next()){
+				for(int i=0;i<6;i++)
+					record[i] = rs.getString(i+1);
+				record[6]=author;
+				queryResult.add(record);
+			}
 		}
+		if(queryResult.isEmpty()) return ERROR;
 		rs.close();stat.close();connect.close();
-		request.setAttribute("result", result);
+		request.setAttribute("result", queryResult);
 		return SUCCESS;
 	}
 	
@@ -264,13 +262,16 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 		ResultSet rs=stat.executeQuery("select count(*) from book where ISBN=\""+ISBN+"\"");
 		while(rs.next()){
 			String count=rs.getString(1);
-			if(count.equals("0")) return ERROR;
+			if(count.equals("0")){
+				result="É¾³ýÊ§°Ü£¡";return SUCCESS;
+			}
 		}
 		rs.close();
 		
 		String qrl="delete from book where ISBN=\""+ISBN+"\"";
 		stat.execute(qrl);
 		rs.close();stat.close();connect.close();
+		result="É¾³ý³É¹¦£¡";
 		return SUCCESS;
 	}
 	
