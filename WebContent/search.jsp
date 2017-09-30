@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.LinkedList" %>
+<%@ page import="java.util.ArrayList" %>
 <%@ page import="java.net.*" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -14,6 +15,7 @@
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <title>书籍信息</title>
 <style type="text/css">
        body{
@@ -72,11 +74,6 @@
     		font-size:17px;
     		
 		}
-		.navbar-default .navbar-collapse, .navbar-default .navbar-form {
-    		border-color: #e7e7e7;
-    		margin-left: 43%;
-		}
-		
 		.form-horizontal .control-label {
     		padding-top: 7px;
     		margin-bottom: 0;
@@ -134,14 +131,8 @@
     </style>
 </head>
 	<%
-		String rs=request.getAttribute("result").toString();
-		String[] works=rs.split("!");
-		LinkedList<String> lst=new LinkedList<String>();
-		for(String work:works)
-			if(!"".equals(work)){
-				String[] items=work.split("~");
-				lst.add(items[2]);
-			}
+		ArrayList<String[]> rs=(ArrayList<String[]>)request.getAttribute("result");
+		String author=rs.get(0)[6];
 	%>
     <body>
     
@@ -219,18 +210,32 @@
         		<th>AuthorID</th>
         	</tr>
         	<%
-        		for(String work:works){
-        			String[] items=work.split("~");
-        		String author=items[6];
-        		String ISBN=items[0];
-        		String title=items[1];
-        		String authorID=items[2];
-        		String Publisher=items[3];
+        		for(String[] items:rs){
+        			String ISBN=items[0];
+        			String title=items[1];
+        			String authorID=items[2];
+        			String Publisher=items[3];
         	%>
+			<script type="text/javascript">
+				function deleteBook()
+				{
+					var r=confirm("确定从数据库中删除该图书!");
+					if (r==true){
+						$.post('deleteBook',
+    	    				{ISBN:"<%=ISBN%>"}
+        						,function(data){
+        						alert(data["result"]);
+        						if(data["result"]=="删除成功！"){
+        							location.href="book.action?author='<%=author %>'"
+        						}
+        				});
+					}
+				}
+			</script>
 			
         		<tr>
         			<td>
-        			<input type="button" name="Submit2" value="删除" class="btn btn-default" onClick="loadXMLDoc()" />
+        			<input type="button" name="Submit2" value="删除" class="btn btn-default" onClick="deleteBook()" />
         			</td>
         			<td id="td2"><a href="detailOfBook.action?ISBN=<%=items[0] %>&AuthorID=<%=items[2] %>"><%=items[1] %></a></td>
         			<td id="td3"><%=authorID %></td>
@@ -244,6 +249,5 @@
          	<a><h1><font color="white">+</font></h3></a>
     	</div>-->
     </div>
-
     </body>
 </html>

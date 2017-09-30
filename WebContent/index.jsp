@@ -65,10 +65,7 @@
     		font-size:17px;
     		
 		}
-		.navbar-default .navbar-collapse, .navbar-default .navbar-form {
-    		border-color: #e7e7e7;
-    		margin-left: 45%;
-		}
+		
 		#search {
   			display: inline-block;
   			border-radius: 4px;
@@ -159,14 +156,12 @@
         		<!-- <button type="submit" class="btn btn-default">search</button>-->
       		</form>
       		<ul class="nav navbar-nav navbar-right">
-        		<!-- <li><a href="index.jsp">主页</a></li>-->
         		<li class="dropdown">
           		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" 
           		aria-expanded="true">功能 <span class="caret"></span></a>
           		<ul class="dropdown-menu">
             		<li><a href="addBook.jsp">添加书籍</a></li>
             		<li><a href="addAuthor.jsp">添加作者</a></li>
-            		<!-- <li><a href="#">Something else here</a></li>-->
           		</ul>
         		</li>
       		</ul>

@@ -76,10 +76,6 @@
     		font-size:17px;
     		
 		}
-		.navbar-default .navbar-collapse, .navbar-default .navbar-form {
-    		border-color: #e7e7e7;
-    		margin-left: 43%;
-		}
 		
 		.form-horizontal .control-label {
     		padding-top: 7px;
