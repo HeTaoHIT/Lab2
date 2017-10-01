@@ -201,7 +201,7 @@
                     				}
                     			}
                     			else {
-                    				guide.action="queryByBook.action";
+                    				guide.action="queryByBook.action?title="+title.value;
                                 	guide.submit();
                     			}
                     		})
@@ -237,7 +237,7 @@
             <h2>新建作者字条 <small></small></h2>
         </div>
         
-        <s:form name="myform" id="info" class="form-horizontal" onSubmit="check_addAuthor()">
+        <s:form name="myform" id="info" class="form-horizontal" onSubmit="return check_addAuthor()">
         <div class="form-group">
         	<label for="authorID" class="col-sm-2 control-label">AuthorID</label>
         	<div class="col-sm-4">
@@ -269,18 +269,7 @@
         			$("#info").serializeArray()
         			,function(data){
         			alert(data["result"]);
-        			if(data["result"]=="建立作者成功"){
-        				var secs = 3; //倒计时的秒数 
-        				for(var i=secs;i>=0;i--) { 
-        					window.setTimeout("doUpdate(" + i + ")", (secs-i) * 1000); 
-        				} 
-        				function doUpdate(num) { 
-        					document.getElementById("#timeCounter").innerHTML = num ; 
-        					if (num == 0){window.location="location.href='javascript:history.go(-1);'"}
-        				}
-        				
-        			}
-        		})
+        		});
         		return false;
         	}
         

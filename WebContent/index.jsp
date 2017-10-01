@@ -137,7 +137,7 @@
                     				}
                     			}
                     			else {
-                    				guide.action="queryByBook.action";
+                    				guide.action="queryByBook.action?title="+title.value;
                                 	guide.submit();
                     			}
                     		})
@@ -153,7 +153,6 @@
         		</div>
                 <button class="btn btn-default" id="search" type="button" style="vertical-align:middle"
                  onclick="searchByBook(guide.title)"><span>search</span></button>
-        		<!-- <button type="submit" class="btn btn-default">search</button>-->
       		</form>
       		<ul class="nav navbar-nav navbar-right">
         		<li class="dropdown">

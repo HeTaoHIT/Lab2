@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -174,6 +175,8 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 	public String DetailOfBook() throws ClassNotFoundException, SQLException{
 		ISBN=request.getParameter("ISBN");
 		AuthorID=request.getParameter("AuthorID");
+		String check=request.getParameter("check");
+		request.setAttribute("check", check);
 		
 		Class.forName("com.mysql.jdbc.Driver");
 		String url="jdbc:mysql://localhost:3306/bookdb";
@@ -196,8 +199,6 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 		request.setAttribute("result", resultJSON);
 		rs.close();
 		
-		connect=DriverManager.getConnection(url,"root","www.12358.com");
-		stat=(Statement) connect.createStatement();
 		rs=stat.executeQuery("select * from author where AuthorID=\""+AuthorID+"\"");
 		LinkedList<String> authorInfo=new LinkedList<String>();
 		while(rs.next()){
@@ -232,6 +233,8 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 			}
 		}
 		if(queryResult.isEmpty()) return ERROR;
+		String[] tmp=new String[1];tmp[0]="true";
+		queryResult.add(tmp);
 		rs.close();stat.close();connect.close();
 		request.setAttribute("result", queryResult);
 		return SUCCESS;
@@ -242,17 +245,38 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 		String url="jdbc:mysql://localhost:3306/bookdb";
 		Connection connect=DriverManager.getConnection(url,"root","www.12358.com");
 		Statement stat=(Statement) connect.createStatement();
-		ResultSet rs=stat.executeQuery("select * from book where title=\""+title+"\"");
-		result="";
+		ResultSet rs=stat.executeQuery("select ISBN from book where title=\""+title+"\"");
+		LinkedList<String> isbns=new LinkedList<String>();
 		while(rs.next()){
-			for(int i=0;i<6;i++)
-				result+=rs.getString(i+1)+"~";
-			result+=author+"!";
+			isbns.add(rs.getString(1));
 		}
-		rs.close();stat.close();connect.close();
-		request.setAttribute("result", result);
+		rs.close();
+		ArrayList<String[]> queryInfo=new ArrayList<String[]>();
+		for(String isbn:isbns){
+			rs=stat.executeQuery("select * from book where ISBN=\""+isbn+"\"");
+			String[] record=new String[7];
+			while(rs.next()){
+				for(int i=0;i<6;i++)
+					record[i]=rs.getString(i+1);
+			}
+			queryInfo.add(record);
+			rs.close();
+		}
+		for(int i=0;i<queryInfo.size();i++){
+			ResultSet query=stat.executeQuery("select Name from author where AuthorID=\""+queryInfo.get(i)[2]+"\"");
+			while(query.next()){
+				queryInfo.get(i)[6]=query.getString(1);
+			}
+			query.close();
+		}
+		stat.close();connect.close();
+		if(queryInfo.isEmpty())	return ERROR;
+		String[] tmp=new String[1];tmp[0]="false";
+		queryInfo.add(tmp);
+		request.setAttribute("result", queryInfo);
 		return SUCCESS;
 	}
+	
 
 	public String deleteBook() throws ClassNotFoundException, SQLException{
 		Class.forName("com.mysql.jdbc.Driver");
@@ -275,6 +299,7 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 		return SUCCESS;
 	}
 	
+	
 	public String modify() throws ClassNotFoundException, SQLException{
 		Class.forName("com.mysql.jdbc.Driver");
 		String url="jdbc:mysql://localhost:3306/bookdb";
@@ -289,16 +314,18 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 			}
 		}
 		rs.close();
-
-		rs=stat.executeQuery("select count(*) from author where AuthorID=\""+AuthorID+"\"");
-		while(rs.next()){
-			String count=rs.getString(1);
-			if(count.equals("0")){
-				result="作者字条不存在！是否新建作者信息？";
-				return SUCCESS;
+		
+		if(AuthorID!=""){
+			rs=stat.executeQuery("select count(*) from author where AuthorID=\""+AuthorID+"\"");
+			while(rs.next()){
+				String count=rs.getString(1);
+				if(count.equals("0")){
+					result="作者字条不存在！是否新建作者信息？";
+					return SUCCESS;
+				}
 			}
+			rs.close();
 		}
-		rs.close();
 		
 		rs=stat.executeQuery("select * from book where ISBN='"+ISBN+"'");
 		String[] info=new String[6];
@@ -323,7 +350,7 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 		
 		
         //System.out.println(AuthorID);
-        if((!"".equals(author))&&(!AuthorID.equals(info[2]))){
+        if((!"".equals(AuthorID))&&(!AuthorID.equals(info[2]))){
         	int q=stat.executeUpdate("update book set AuthorID='"+AuthorID+"' where ISBN='"+ISBN+"'");
         	if(q!=1){
         		result="更新失败!";return SUCCESS;
@@ -359,22 +386,8 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
         	pstmt.setFloat(1, (float) Double.parseDouble(price));
         	pstmt.setString(2, ISBN);
         	pstmt.executeUpdate();
-        	//int q=stat.executeUpdate("update book set price="+(float)Double.parseDouble(price)+" where ISBN="+ISBN+"'");
         }
-        /*PreparedStatement pstmt=connect.prepareStatement("insert into book values(?,?,?,?,?,?)");
-        pstmt.setString(1, ISBN);
-        pstmt.setString(2, title);
-        pstmt.setString(3, AuthorID);
-        pstmt.setString(4, publisher);
-        pstmt.setString(5, publishDate);
-        pstmt.setFloat(6, (float) Double.parseDouble(price));
-        pstmt.executeUpdate();*/
-        
-		//PreparedStatement pstmt=connect.prepareStatement("update book set ")
-		//"update book set AuthorID=\""+AuthorID+"\","
-				//+ "publisher=\""+publisher+"\",publishDate=\""+date+"\",price="+price+" where ISBN=\""+ISBN+"\"";
-		//rs=stat.executeQuery(query);
-		result="更新成功！";//dataMap.put("result", result);
+        result="更新成功！";
 		return SUCCESS;
 	}
 	
@@ -387,7 +400,7 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 		while(rs.next()){
 			int count=rs.getInt(1);
 			if(count!=0){
-				result="作者名已存在！";
+				result="作者ID已存在！";
 				return SUCCESS;
 			}
 		}
@@ -401,7 +414,7 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 		result="添加成功!";
 		return SUCCESS;
 	}
-	
+
 	public String addBook() throws ClassNotFoundException, SQLException{
 		Class.forName("com.mysql.jdbc.Driver");
 		String url="jdbc:mysql://localhost:3306/bookdb";
@@ -410,16 +423,25 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 		ResultSet rs=stat.executeQuery("select count(*) from book where ISBN=\""+ISBN+"\"");
 		while(rs.next()){
 			String count=rs.getString(1);
-			if(count.equals("0")){
-				result="该书目已存在！";
+			if(!count.equals("0")){
+				result="该ISBN已存在！";
 				return SUCCESS;
 			}
 		}
 		rs.close();
 		
-		rs=stat.executeQuery("insert into book values(\""+ISBN+"\",\""+title+"\",\""+AuthorID+"\",\""+publisher+"\")"
-		+"\",\""+publishDate+"\",\""+price+"\")");
-		result="添加成功！";
+		rs=stat.executeQuery("select count(*) from author where AuthorID=\""+AuthorID+"\"");
+		while(rs.next()){
+			int count=rs.getInt(1);
+			if(count==0){
+				result="作者字条不存在！是否新建作者信息？";
+				return SUCCESS;
+			}
+		}
+		
+		int q=stat.executeUpdate("insert into book values(\""+ISBN+"\",\""+title+"\",\""+AuthorID+"\",\""+publisher+"\",\""+publishDate+"\",\""+price+"\")");
+		if(q==1)	result="添加成功！";
+		else result="添加失败！";
 		return SUCCESS;
 	}
 	

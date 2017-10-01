@@ -8,6 +8,7 @@
  	String title = request.getParameter("title").trim();
    	String ISBN=request.getParameter("ISBN");
    	String AuthorID=request.getParameter("AuthorID");
+   	String check=request.getParameter("check");
  %>
 <head>
     <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -169,7 +170,7 @@
                     				}
                     			}
                     			else {
-                    				guide.action="queryByBook.action";
+                    				guide.action="queryByBook.action?title="+title.value;
                                 	guide.submit();
                     			}
                     		})
@@ -273,7 +274,7 @@
       			<!-- check_modify(myform.author,myform.publisher,myform.publishDate,myform.price)">更新</button>-->
       			<input type="submit" name="Submit" id="submit" value="更新" class="btn btn-default"/>
       			<!-- <button id="back" name="back" class="btn btn-default" onClick="javascript:history.back(-1);"><span>返回</span></button>-->
-      			<input name="back" type="button" id="back" class="btn btn-default" onclick="location.href='detailOfBook.action?ISBN=<%=ISBN %>'" value="返 回" /><!-- javascript:history.back(-1); -->
+      			<input name="back" type="button" id="back" class="btn btn-default" onclick="location.href='detailOfBook.action?ISBN=<%=ISBN %>&check=<%=check %>'" value="返 回" /><!-- javascript:history.back(-1); -->
 		    </div>
         </form>
         

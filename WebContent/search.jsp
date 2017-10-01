@@ -132,7 +132,7 @@
 </head>
 	<%
 		ArrayList<String[]> rs=(ArrayList<String[]>)request.getAttribute("result");
-		String author=rs.get(0)[6];
+		String check=rs.get(rs.size()-1)[0];
 	%>
     <body>
     
@@ -165,7 +165,7 @@
                     				}
                     			}
                     			else {
-                    				guide.action="queryByBook.action";
+                    				guide.action="queryByBook.action?title="+title.value;
                                 	guide.submit();
                     			}
                     		})
@@ -189,7 +189,6 @@
           		<ul class="dropdown-menu">
             		<li><a href="addBook.jsp">添加书籍</a></li>
             		<li><a href="addAuthor.jsp">添加作者</a></li>
-            		<!-- <li><a href="#">Something else here</a></li>-->
           		</ul>
         		</li>
       		</ul>
@@ -210,34 +209,20 @@
         		<th>AuthorID</th>
         	</tr>
         	<%
-        		for(String[] items:rs){
+        		for(int i=0;i<rs.size()-1;i++){
+        			String[] items=rs.get(i);
         			String ISBN=items[0];
         			String title=items[1];
         			String authorID=items[2];
         			String Publisher=items[3];
+        			String author=items[6];
         	%>
-			<script type="text/javascript">
-				function deleteBook()
-				{
-					var r=confirm("确定从数据库中删除该图书!");
-					if (r==true){
-						$.post('deleteBook',
-    	    				{ISBN:"<%=ISBN%>"}
-        						,function(data){
-        						alert(data["result"]);
-        						if(data["result"]=="删除成功！"){
-        							location.href="book.action?author='<%=author %>'"
-        						}
-        				});
-					}
-				}
-			</script>
 			
         		<tr>
         			<td>
-        			<input type="button" name="Submit2" value="删除" class="btn btn-default" onClick="deleteBook()" />
+        			<input type="button" name="Submit2" value="删除" class="btn btn-default" onClick="deleteBook('<%=ISBN %>','<%=title %>','<%=author %>')" />
         			</td>
-        			<td id="td2"><a href="detailOfBook.action?ISBN=<%=items[0] %>&AuthorID=<%=items[2] %>"><%=items[1] %></a></td>
+        			<td id="td2"><a href="detailOfBook.action?ISBN=<%=items[0] %>&AuthorID=<%=items[2] %>&check=<%=check %>"><%=items[1] %></a></td>
         			<td id="td3"><%=authorID %></td>
         		</tr>
         	<%
@@ -245,9 +230,27 @@
         	%>
         </table>        
         </div>
-       <!-- <div style=" width:50px; height:50px; background-color:#F00; border-radius:30px;">
-         	<a><h1><font color="white">+</font></h3></a>
-    	</div>-->
     </div>
+    		<script type="text/javascript">
+				function deleteBook(ISBN,title,author)
+				{
+					var r=confirm("确定从数据库中删除该图书!");
+					if (r==true){
+						$.post('deleteBook',
+    	    				{ISBN:String(ISBN)}
+        						,function(data){
+        						alert(data["result"]);
+        						if(data["result"]=="删除成功！"){
+        							if('<%=check %>'=="true"){
+        								location.href="book.action?author="+author;
+        							}
+        							else if('<%=check %>'=="false"){
+        								location.href="queryByBook?title="+title;
+        							}
+        						}
+        				});
+					}
+				}
+			</script>
     </body>
 </html>
