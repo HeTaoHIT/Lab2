@@ -127,7 +127,7 @@
     			function searchByBook(title){
     				if(title.value=="")	alert("输入不能为空！");
     				else{
-                		$.post('BookIsExit',
+                		$.post('BookIsExist',
                 				$("#guide").serializeArray() 
                     			,function(data){
                     			if(data["result"]=="书籍不存在!"){
@@ -175,7 +175,7 @@
             function openWindow(author){
             	if(author.value=="")	alert("输入不能为空！");
             	else{
-            		$.post('AuthorIsExit',
+            		$.post('AuthorIsExist',
             				$("#myform").serializeArray() 
                 			,function(data){
                 			if(data["result"]=="作者不存在!"){
@@ -187,11 +187,11 @@
                 			else if(data["result"]=="作者字条未添加作品！"){
                 				var r=confirm("作者字条尚未添加作品！是否添加书籍？");
                 				if(r){
-                					location.href="addAuthor.jsp";
+                					location.href="addBook.jsp";
                 				}
                 			}
                 			else {
-                				myform.action="book.action";
+                				myform.action="queryByAuthor.action";
                             	myform.submit();
                 			}
                 		})

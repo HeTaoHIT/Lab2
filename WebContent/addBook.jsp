@@ -182,7 +182,7 @@
     			function searchByBook(title){
     				if(title.value=="")	alert("输入不能为空！");
     				else{
-                		$.post('BookIsExit',
+                		$.post('BookIsExist',
                 				$("#guide").serializeArray() 
                     			,function(data){
                     			if(data["result"]=="书籍不存在!"){

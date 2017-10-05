@@ -155,6 +155,7 @@
                  onclick="searchByBook(guide.title)"><span>search</span></button>
       		</form>
       		<ul class="nav navbar-nav navbar-right">
+      			<li><a href="index.jsp">主页</a></li>
         		<li class="dropdown">
           		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" 
           		aria-expanded="true">功能 <span class="caret"></span></a>

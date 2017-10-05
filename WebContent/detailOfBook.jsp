@@ -186,7 +186,7 @@
     			function searchByBook(title){
     				if(title.value=="")	alert("输入不能为空！");
     				else{
-                		$.post('BookIsExit',
+                		$.post('BookIsExist',
                 				$("#guide").serializeArray() 
                     			,function(data){
                     			if(data["result"]=="书籍不存在!"){
@@ -274,7 +274,7 @@
 	<script type="text/javascript">
 		function returnBack(){
 			if('<%=check %>'=="true"){
-				location.href='book.action?author=<%=Name %>';
+				location.href='queryByAuthor.action?author=<%=Name %>';
 			}
 			else if('<%=check %>'=="false"){
 				location.href='queryByBook.action?title=<%=title%>';

@@ -5,9 +5,9 @@
 <struts>
 <constant name="struts.devMode" value="true" />
 	<package name="demo" extends="struts-default">
-		<action name="book" 
+		<action name="queryByAuthor" 
             class="com.hetao.action.bookAction"
-            method="QueryAllBooks">
+            method="QueryByAuthor">
             <result name="success">search.jsp</result>
 			<result name="error">BookEmptyError.jsp</result>
       	</action>
@@ -20,14 +20,14 @@
      	</action>
      </package>
      <package name="Json" extends="json-default">
-     	<action name="AuthorIsExit" class="com.hetao.action.bookAction" method="AuthorIsExit">
+     	<action name="AuthorIsExist" class="com.hetao.action.bookAction" method="AuthorIsExist">
      		<result type="json">
      			<param name="result">result</param>
      			<param name="noCache">true</param>
      			<param name="excludeNullProperties">true</param>
      		</result>
      	</action>
-     	<action name="BookIsExit" class="com.hetao.action.bookAction" method="BookIsExit">
+     	<action name="BookIsExist" class="com.hetao.action.bookAction" method="BookIsExist">
      		<result type="json">
      			<param name="result">result</param>
      			<param name="noCache">true</param>

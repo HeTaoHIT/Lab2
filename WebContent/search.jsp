@@ -155,7 +155,7 @@
     			function searchByBook(title){
     				if(title.value=="")	alert("输入不能为空！");
     				else{
-                		$.post('BookIsExit',
+                		$.post('BookIsExist',
                 				$("#guide").serializeArray() 
                     			,function(data){
                     			if(data["result"]=="书籍不存在!"){
@@ -220,7 +220,7 @@
 			
         		<tr>
         			<td>
-        			<input type="button" name="Submit2" value="删除" class="btn btn-default" onClick="deleteBook('<%=ISBN %>','<%=title %>','<%=author %>')" />
+        			<input type="button" name="detail" value="删除" class="btn btn-default" onClick="deleteBook('<%=ISBN %>','<%=title %>','<%=author %>')" />
         			</td>
         			<td id="td2"><a href="detailOfBook.action?ISBN=<%=items[0] %>&AuthorID=<%=items[2] %>&check=<%=check %>"><%=items[1] %></a></td>
         			<td id="td3"><%=authorID %></td>
@@ -242,7 +242,7 @@
         						alert(data["result"]);
         						if(data["result"]=="删除成功！"){
         							if('<%=check %>'=="true"){
-        								location.href="book.action?author="+author;
+        								location.href="queryByAuthor.action?author="+author;
         							}
         							else if('<%=check %>'=="false"){
         								location.href="queryByBook?title="+title;
