@@ -452,7 +452,6 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 	
 	@Override
 	public void setServletRequest(HttpServletRequest request) {
-		// TODO Auto-generated method stub
 		this.request=request;
 	}
 	
