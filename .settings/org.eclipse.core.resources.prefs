@@ -2,4 +2,5 @@ eclipse.preferences.version=1
 encoding//WebContent/BookEmptyError.jsp=UTF-8
 encoding//WebContent/addAuthor.jsp=UTF-8
 encoding//WebContent/css/indexStyle.css=UTF-8
+encoding//WebContent/css/searchStyle.css=UTF-8
 encoding//WebContent/modify.jsp=UTF-8

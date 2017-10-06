@@ -16,241 +16,108 @@
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 	<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	<link rel="stylesheet" href="<%=request.getContextPath()%>/css/searchStyle.css">
+	<!-- <script type="text/javascript" src="${pageContext.request.contextPath }/js/search.js"></script>-->
+	<script type="text/javascript" src="${pageContext.request.contextPath }/js/searchByBook.js"></script>
 <title>书籍信息</title>
-<style type="text/css">
-       body{
-            margin-top:0;
-            padding:0;
-            background:cover;
-            background-color:grey;
-        }
-       .jumbotron{
-           padding-top: 0px;
-           padding-bottom: 50px;
-           margin-top:0;
-           margin-bottom: 30px;
-           color: inherit;
-           background-color: #eee;
-           background-position:top left;
-       }
-       .container-fluid {
-    		padding-right: 10px;
-    		padding-left: 0px;
-    		margin-right: auto;
-    		margin-left: auto;
-    		background-color: dimgray;
-		}
-        .row{
-            margin-right: -15px;
-            margin-left: 31%;
-        }
-        #list{
-        	align:center;
-        	margin-left:10%;
-        }
-        
-        #td2{
-        	padding-top:15px;
-        }
-        #td3{
-        	padding-top:15px;
-        }
-		div.polaroid {
-  			width: 30%;
-  			border-radius: 4px;
-  			background-color: white;
-  			box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.4), 0 6px 20px 0 rgba(0, 0, 0, 0.4);
-  			margin-bottom: 25px;
-		}
-		.jumbotron p {
-    		padding-top: 11px;
-    		margin-bottom: 15px;
-    		font-size: 16px;
-    		font-weight: 200;
-    		color: white;
-		}
-		.navbar-default .navbar-nav>li>a {
-    		color: white;
-    		font-size:17px;
-    		
-		}
-		.form-horizontal .control-label {
-    		padding-top: 7px;
-    		margin-bottom: 0;
-    		text-align: right;
-    		margin-left: 14%;
-		}
-		.col-sm-offset-2 {
-    		margin-left: 16.66666667%;
-    		padding-left: 20%;
-		}
-		div.container {
-  			text-align: center;
-  			padding: 10px 20px;
-		}
-		#search {
-  			display: inline-block;
-  			border-radius: 4px;
-  			color: black;
-  			text-align: center;
-  			
-  			padding-left: 10px;
-  			padding-right:10px;
-  			width:80px;
-  			transition: all 0.5s;
-  			cursor: pointer;
-		}
-
-		#search span {
-  			cursor: pointer;
-  			display: inline-block;
-  			position: relative;
-  			transition: 0.5s;
-		}
-
-		#search span:after {
-  			content: '»';
-  			position: absolute;
-  			opacity: 0;
-  			top: 0;
-  			right: -20px;
-  			transition: 0.5s;
-		}
-	
-		#search:hover span {
-  			padding-right: 25px;
-		}
-
-		#search:hover span:after {
-  			opacity: 1;
-  			right: 0;
-		}
-		a:link{color:blue;}
-       	a:visited{color:blue;}
-       	a:hover{color:purple;}
-    </style>
 </head>
 	<%
 		ArrayList<String[]> rs=(ArrayList<String[]>)request.getAttribute("result");
 		String check=rs.get(rs.size()-1)[0];
 	%>
     <body>
-    
-    <div class="jumbotron">
-    
-    	<nav class="navbar navbar-default">
-  		<div class="container-fluid">
-    	<!-- Brand and toggle get grouped for better mobile display -->
-    		<div class="navbar-header">
-      		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-        		<span class="sr-only">Toggle navigation</span>
-        		<span class="icon-bar"></span>
-        		<span class="icon-bar"></span>
-        		<span class="icon-bar"></span>
-      		</button>
-      		<p>Books Management System</p>
-    		</div>
-    		
-    		<script type="text/javascript">
-    			function searchByBook(title){
-    				if(title.value=="")	alert("输入不能为空！");
-    				else{
-                		$.post('BookIsExist',
-                				$("#guide").serializeArray() 
-                    			,function(data){
-                    			if(data["result"]=="书籍不存在!"){
-                    				var r=confirm("书籍不存在!是否新建书籍字条？");
-                    				if(r){
-                    					location.href="addBook.jsp";
-                    				}
-                    			}
-                    			else {
-                    				guide.action="queryByBook.action?title="+title.value;
-                                	guide.submit();
-                    			}
-                    		})
-                    }
-    			}
-    		</script>
-		
-    		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      		<form name="guide" id="guide" class="navbar-form navbar-left">
-        		<div class="form-group">
-          		<input type="text" name="title" class="form-control" placeholder="Search by bookname">
-        		</div>
-        		<button class="btn btn-default" id="search" type="button" style="vertical-align:middle"
-                 onclick="searchByBook(guide.title)"><span>search</span></button>
-      		</form>
-      		<ul class="nav navbar-nav navbar-right">
-        		<li><a href="index.jsp">主页</a></li>
-        		<li class="dropdown">
-          		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" 
-          		aria-expanded="true">功能 <span class="caret"></span></a>
-          		<ul class="dropdown-menu">
-            		<li><a href="addBook.jsp">添加书籍</a></li>
-            		<li><a href="addAuthor.jsp">添加作者</a></li>
-          		</ul>
-        		</li>
-      		</ul>
-    		</div><!-- /.navbar-collapse -->
-  		</div><!-- /.container-fluid -->
-	</nav>
-    	
-       	<div class="page-header">
-            <h1 align="center"> <small></small></h1>
-        </div>
-        
-        <div id="list">
-        <table class="table table-hover">
-        	<caption><h2>查询结果：</h2></caption>
-        	<tr>
-        		<th>操作</th>
-        		<th>title</th>
-        		<th>AuthorID</th>
-        	</tr>
-        	<%
-        		for(int i=0;i<rs.size()-1;i++){
-        			String[] items=rs.get(i);
-        			String ISBN=items[0];
-        			String title=items[1];
-        			String authorID=items[2];
-        			String Publisher=items[3];
-        			String author=items[6];
-        	%>
-			
-        		<tr>
-        			<td>
-        			<input type="button" name="detail" value="删除" class="btn btn-default" onClick="deleteBook('<%=ISBN %>','<%=title %>','<%=author %>')" />
-        			</td>
-        			<td id="td2"><a href="detailOfBook.action?ISBN=<%=items[0] %>&AuthorID=<%=items[2] %>&check=<%=check %>"><%=items[1] %></a></td>
-        			<td id="td3"><%=authorID %></td>
-        		</tr>
-        	<%
-        		}
-        	%>
-        </table>        
-        </div>
-    </div>
-    		<script type="text/javascript">
-				function deleteBook(ISBN,title,author)
-				{
+	    <div class="jumbotron">
+	    
+	    	<nav class="navbar navbar-default">
+		  		<div class="container-fluid">
+		    		<div class="navbar-header">
+		      		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+		        		<span class="sr-only">Toggle navigation</span>
+		        		<span class="icon-bar"></span>
+		        		<span class="icon-bar"></span>
+		        		<span class="icon-bar"></span>
+		      		</button>
+		      		<p>Books Management System</p>
+		    		</div>
+		    		
+		    		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+			      		<form name="guide" id="guide" class="navbar-form navbar-left">
+			        		<div class="form-group">
+			          			<input type="text" name="title" class="form-control" placeholder="Search by bookname">
+			        		</div>
+			        		<button class="btn btn-default" id="search" type="button" style="vertical-align:middle"
+			                 onclick="searchByBook(guide.title)"><span>search</span></button>
+			      		</form>
+			      		<ul class="nav navbar-nav navbar-right">
+			        		<li><a href="index.jsp">主页</a></li>
+			        		<li class="dropdown">
+				          		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" 
+				          		aria-expanded="true">功能 <span class="caret"></span></a>
+				          		<ul class="dropdown-menu">
+				            		<li><a href="addBook.jsp">添加书籍</a></li>
+				            		<li><a href="addAuthor.jsp">添加作者</a></li>
+				          		</ul>
+			        		</li>
+			      		</ul>
+		    		</div>
+		  		</div>
+			</nav>
+	    	
+	       	<div class="page-header">
+	            <h1 align="center"> <small></small></h1>
+	        </div>
+	        
+	        <div id="list">
+		        <table class="table table-hover">
+		        	<caption><h2>查询结果：</h2></caption>
+		        	<tr>
+		        		<th>操作</th>
+		        		<th>title</th>
+		        		<th>AuthorID</th>
+		        	</tr>
+		        	<%
+		        		for(int i=0;i<rs.size()-1;i++){
+		        			String[] items=rs.get(i);
+		        			String ISBN=items[0];
+		        			String title=items[1];
+		        			String authorID=items[2];
+		        			String Publisher=items[3];
+		        			String author=items[6];
+		        	%>
+	        		<tr>
+	        			<td>
+	        				<input type="button" name="detail" value="删除" class="btn btn-default" onClick="deleteBook('<%=ISBN %>','<%=title %>','<%=author %>')" />
+	        			</td>
+	        			<td id="td2"><a href="detailOfBook.action?ISBN=<%=items[0] %>&AuthorID=<%=items[2] %>&check=<%=check %>"><%=items[1] %></a></td>
+	        			<td id="td3"><%=authorID %></td>
+	        		</tr>
+		        	<%
+		        		}
+		        	%>
+		        </table>        
+	        </div>
+	        
+	        <script type="text/javascript">
+	    		function deleteBook(ISBN,title,author){
 					var r=confirm("确定从数据库中删除该图书!");
 					if (r==true){
 						$.post('deleteBook',
-    	    				{ISBN:String(ISBN)}
-        						,function(data){
-        						alert(data["result"]);
-        						if(data["result"]=="删除成功！"){
-        							if('<%=check %>'=="true"){
-        								location.href="queryByAuthor.action?author="+author;
-        							}
-        							else if('<%=check %>'=="false"){
-        								location.href="queryByBook?title="+title;
-        							}
-        						}
-        				});
+							{ISBN:String(ISBN)}
+								,function(data){
+								alert(data["result"]);
+								if(data["result"]=="删除成功！"){
+									if('<%=check %>'=="true"){
+										location.href="queryByAuthor.action?author="+author;
+									}
+									else if('<%=check %>'=="false"){
+										location.href="queryByBook?title="+title;
+									}
+								}
+						});
 					}
 				}
-			</script>
+    		</script>
+	        
+	    </div>
     </body>
 </html>

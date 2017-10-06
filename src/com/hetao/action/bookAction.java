@@ -227,8 +227,8 @@ public class bookAction extends ActionSupport implements ServletRequestAware{
 			pstmt=connect.prepareStatement("select * from Book where AuthorID=?");
 			pstmt.setString(1, id);
 			rs=pstmt.executeQuery();
-			String[] record = new String[7];
 			while(rs.next()){
+				String[] record = new String[7];
 				for(int i=0;i<6;i++)
 					record[i] = rs.getString(i+1);
 				record[6]=author;
